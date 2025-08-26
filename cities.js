@@ -1,7 +1,8 @@
 // cities.js
 module.exports = [
   // Canada
-  { name: "Toronto, Canada", coords: "43.6532,-79.3832" },
+  // { name: "Toronto, Canada", coords: "43.6532,-79.3832" },
+  { name: "Seattle, USA", coords: "47.6062,-122.3321" },
   // { name: "Vancouver, Canada", coords: "49.2827,-123.1207" },
   // { name: "Calgary, Canada", coords: "51.0447,-114.0719" },
   // { name: "Edmonton, Canada", coords: "53.5461,-113.4938" },
