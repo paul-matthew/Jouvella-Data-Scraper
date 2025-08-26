@@ -14,11 +14,22 @@ const MIN_REVIEWS = 5;
 const MIN_RATING = 3.0;
 const NEW_RESULTS_LIMIT = 5;
 
-// ✅ Google Sheets setup
-const auth = new google.auth.GoogleAuth({
-  keyFile: "sheets-search-log-bc033bbc638b.json",
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-});
+// ✅ Google Sheets setup (works both locally + GitHub)
+let auth;
+if (process.env.GOOGLE_CREDENTIALS) {
+  // Running with env secret (GitHub / server)
+  const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  auth = new google.auth.GoogleAuth({
+    credentials,
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  });
+} else {
+  // Running locally, use your .json file
+  auth = new google.auth.GoogleAuth({
+    keyFile: "sheets-search-log-bc033bbc638b.json",
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  });
+}
 const sheets = google.sheets({ version: "v4", auth });
 
 // ✅ Cache existing Google Sheets data
@@ -130,7 +141,7 @@ async function getPlaceDetails(placeId) {
 }
 
 // ✅ Paginated search
-async function searchPlaces(query, location, radius = 5000, maxResults = 60) { //max searches
+async function searchPlaces(query, location, radius = 5000, maxResults = 60) {
   let allResults = [];
   let nextPageToken = null;
 
@@ -182,7 +193,7 @@ async function isWebsiteLowBudget(url) {
     for (const city of cities) {
       for (const keyword of keywords) {
         console.log(`\n🏙️ City: ${city.name} | 🔑 Keyword: ${keyword}`);
-        const results = await searchPlaces(keyword, city.coords, 5000, 60); //max searches
+        const results = await searchPlaces(keyword, city.coords, 5000, 60);
 
         console.log(`🔎 Found ${results.length} places for "${keyword}" in ${city.name}`);
 
@@ -243,12 +254,3 @@ async function isWebsiteLowBudget(url) {
     console.error("❌ Fatal error:", err.message);
   }
 })();
-
-
-
-
-
-
-
-
-
