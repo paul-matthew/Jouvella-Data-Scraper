@@ -141,7 +141,7 @@ async function getPlaceDetails(placeId) {
 }
 
 // ✅ Paginated search
-async function searchPlaces(query, location, radius = 5000, maxResults = 60) {
+async function searchPlaces(query, location, radius = 5000, maxResults = 5) { //revise to 60 when done testing
   let allResults = [];
   let nextPageToken = null;
 
@@ -193,7 +193,7 @@ async function isWebsiteLowBudget(url) {
     for (const city of cities) {
       for (const keyword of keywords) {
         console.log(`\n🏙️ City: ${city.name} | 🔑 Keyword: ${keyword}`);
-        const results = await searchPlaces(keyword, city.coords, 5000, 60);
+        const results = await searchPlaces(keyword, city.coords, 5000, 5); //revise to 60 when done testing
 
         console.log(`🔎 Found ${results.length} places for "${keyword}" in ${city.name}`);
 
