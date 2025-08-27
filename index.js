@@ -1,9 +1,14 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const fs = require("fs");
 const { google } = require("googleapis");
 const axios = require("axios");
 const Airtable = require("airtable");
 const cities = require("./cities");
+
+// DEBUG: check if the secret is available
+console.log("AIRTABLE_API_KEY is set?", !!process.env.AIRTABLE_API_KEY);
 
 // Airtable setup
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
