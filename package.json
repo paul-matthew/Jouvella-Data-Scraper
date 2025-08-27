@@ -12,6 +12,7 @@
   "dependencies": {
     "airtable": "^0.12.2",
     "axios": "^1.11.0",
-    "dotenv": "^17.2.1"
+    "dotenv": "^17.2.1",
+    "googleapis": "^158.0.0"
   }
 }
