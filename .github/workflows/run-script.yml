@@ -6,6 +6,7 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    environment: .env  # <-- this links your job to the GitHub environment named ".env"
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -18,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Debug environment variables
+      - name: Debug secrets
         run: |
           echo "GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY && '***SET***' || 'MISSING' }}"
           echo "AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY && '***SET***' || 'MISSING' }}"
@@ -40,6 +41,3 @@ jobs:
           GOOGLE_CLIENT_EMAIL: ${{ secrets.GOOGLE_CLIENT_EMAIL }}
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
         run: node index.js
-
-
-
