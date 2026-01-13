@@ -24,9 +24,9 @@ module.exports = [
 
 //  { name: "Miami, USA", coords: "25.7650,-80.1937" }
 // { name: "Orlando – Downtown", coords: "28.5383,-81.3792" },
-{ name: "Austin – Downtown", coords: "30.2672,-97.7431" }
+// { name: "Austin – Downtown", coords: "30.2672,-97.7431" }
 
-// {name: "Miami – Brickell", coords: "25.7617,-80.1918",},
+{name: "Miami – Brickell", coords: "25.7617,-80.1918",},
 // {name: "Newport Beach",coords: "33.6189,-117.9298",},
 // {name: "Scottsdale",coords: "33.4942,-111.9261",},
   // { name: "Dallas, USA", coords: "32.7767,-96.7970" },

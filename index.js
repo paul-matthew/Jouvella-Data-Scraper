@@ -17,7 +17,7 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
 // --------------------
 // Tunables
 // --------------------
-const NEW_RESULTS_LIMIT = 20; // increase later when stable
+const NEW_RESULTS_LIMIT = 20;
 
 // --------------------
 // Google Sheets setup
@@ -147,9 +147,6 @@ async function searchPlaces(query, location, maxResults = 20) {
     }`;
 
     const res = await axios.get(url);
-
-    console.log("🔎 Google returned:", res.data.results?.length || 0, "results");
-
     allResults = allResults.concat(res.data.results || []);
     nextPageToken = res.data.next_page_token;
 
@@ -160,7 +157,7 @@ async function searchPlaces(query, location, maxResults = 20) {
 }
 
 // --------------------
-// Website quality evaluation (matches Airtable options)
+// Website quality evaluation
 // --------------------
 function evaluateWebsiteQuality(url) {
   if (!url) return "No Website";
@@ -180,7 +177,7 @@ function evaluateWebsiteQuality(url) {
 // --------------------
 // City grid sweep
 // --------------------
-const searchGridOffset = 0.03; // ~3km
+const searchGridOffset = 0.03;
 
 function generateCityGrid(coord) {
   const [lat, lng] = coord.split(",").map(Number);
@@ -200,8 +197,24 @@ function generateCityGrid(coord) {
   await loadExistingBusinesses();
 
   const keywords = [
+    "medical spa",
     "med spa",
+    "medical aesthetics",
     "aesthetic clinic",
+    "cosmetic dermatology",
+    "laser clinic",
+    "injectables clinic",
+    "skin clinic",
+  //     "botox",
+  // "fillers",
+  // "laser hair removal",
+  // "microneedling",
+  // "hydrafacial",
+  // "morpheus8",
+  // "ipl laser",
+  // "rf microneedling",
+  // "body contouring",
+  // "skin tightening",
   ];
 
   for (const city of cities) {
@@ -209,7 +222,7 @@ function generateCityGrid(coord) {
 
     for (const point of points) {
       for (const keyword of keywords) {
-        console.log(`\n🏙️ City: ${city.name} | Point: ${point} | 🔑 Keyword: ${keyword}`);
+        console.log(`\n🏙️ ${city.name} | ${keyword}`);
 
         const results = await searchPlaces(keyword, point, 60);
         let newCount = 0;
@@ -219,31 +232,23 @@ function generateCityGrid(coord) {
 
           const details = await getPlaceDetails(place.place_id);
 
-          const businessName = details.name || place.name || "Unknown";
+          const businessName = details.name || place.name;
           const address = details.formatted_address || "";
           const placeId = place.place_id;
 
+          if (!businessName || !address || !placeId) continue;
           if (isLoggedInSearchLogCached(placeId)) continue;
 
+          // ✅ NEW QUALIFICATION FILTERS
+          if (details.business_status !== "OPERATIONAL") continue;
+
+          const hasContact =
+            details.website || details.formatted_phone_number;
+          if (!hasContact) continue;
+
+          if ((details.user_ratings_total || 0) < 5) continue;
+
           const websiteQuality = evaluateWebsiteQuality(details.website);
-
-          console.log("FOUND:", {
-            name: businessName,
-            address,
-            placeId,
-            website: details.website,
-          });
-
-          // ✅ FIXED QUALIFICATIONS (minimal, safe)
-          const qualifies =
-            !!businessName &&
-            !!address &&
-            !!placeId;
-
-          if (!qualifies) {
-            console.log(`⏭️ Skipped: ${businessName}`);
-            continue;
-          }
 
           await addToAirtable({
             leadName: "",
